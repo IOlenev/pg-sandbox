@@ -1,0 +1,35 @@
+networks:
+  pg:
+    driver: bridge
+    name: pg
+
+services:
+  pg-pg:
+    hostname: pg-pg
+    container_name: pg-pg
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: '${PG_USER}'
+      POSTGRES_PASSWORD: '${PG_PASSWORD}'
+      POSTGRES_DB: '${PG_DB}'
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5430:5432"
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data/pgdata
+    networks:
+      - pg
+
+  pg-admin:
+    hostname: pg-admin
+    container_name: pg-admin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: '${PGADMIN_EMAIL}'
+      PGADMIN_DEFAULT_PASSWORD: '${PGADMIN_PASSWORD}'
+      PGADMIN_CONFIG_CHECK_EMAIL_DELIVERABILITY: "False"
+      PGADMIN_CONFIG_SECURITY_EMAIL_VALIDATOR_ARGS: "{\"check_deliverability\": CHECK_EMAIL_DELIVERABILITY}"
+    ports:
+      - "8080:80"
+    networks:
+      - pg
